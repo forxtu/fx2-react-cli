@@ -1,0 +1,24 @@
+{
+  "name": "fx2-react-cli",
+  "version": "0.1.0",
+  "description": "A npm package to generate a react components",
+  "main": "index.js",
+  "bin": {
+    "fx2": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forxtu/fx2-react-cli"
+  },
+  "author": "Dennis Merkulov",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.13.0",
+    "fs-extra": "^5.0.0",
+    "lodash": "^4.17.14",
+    "replace": "^1.1.0"
+  }
+}
