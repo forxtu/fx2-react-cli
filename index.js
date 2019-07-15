@@ -7,7 +7,7 @@ const createHook = require("./modules/createHook");
 
 program
   .command("g <component>")
-  .option("-c, --class", "Create class component")
+  .option("-c, --classComponent", "Create class component")
   .option("-t, --typescript", "Create typescript file")
   .option("-n, --nofolder", "Do not wrap component in folder")
   .option("-s, --style", "With stylesheet")
@@ -16,6 +16,7 @@ program
 program
   .command("gh <component>")
   .option("-t, --typescript", "Create typescript file")
+  .option("-n, --nofolder", "Do not wrap hook in folder")
   .action(createHook);
 
 program.parse(process.argv);

@@ -21,6 +21,9 @@ module.exports = async function createComponent(component, cmd) {
   cmd.functionalComponent
     ? (functionalComponent = true)
     : (functionalComponent = false);
+  cmd.functionalComponentTs
+    ? (functionalComponentTs = true)
+    : (functionalComponentTs = false);
   cmd.style ? (stylesheet = true) : (stylesheet = false);
 
   if (fs.existsSync("./src/components")) {
@@ -31,14 +34,31 @@ module.exports = async function createComponent(component, cmd) {
 };
 
 function buildTemplate() {
-  let imports = [templates.imports.react, templates.imports.propTypes];
+  let imports;
+  typescript
+    ? (imports = [templates.imports.reactTs])
+    : classComponent
+    ? (imports = [templates.imports.reactClass])
+    : (imports = [templates.imports.react]);
+
+  let body;
+
+  if (!typescript) {
+    imports.push(templates.imports.propTypes);
+
+    body = classComponent
+      ? [templates.classComponent]
+      : [templates.functionalComponent].join("\n");
+  } else {
+    body = classComponent
+      ? [templates.classComponentTs]
+      : [templates.functionalComponentTs].join("\n");
+  }
 
   if (stylesheet) {
     imports.push(templates.imports.stylesheet);
   }
-  let body = classComponent
-    ? [templates.classComponent]
-    : [templates.functionalComponent].join("\n");
+
   let exported = [templates.exported.default];
 
   return imports.join("\n") + "\n" + body + "\n" + exported;
@@ -46,17 +66,19 @@ function buildTemplate() {
 
 function writeFile(template, component) {
   let path = newCompPath;
+
   if (nofolder) {
     strArr = newCompPath.split("/");
     strArr.splice(strArr.length - 1, 1);
     path = strArr.join("/");
     console.log(path);
   }
+
   let comp = component.split("/");
   comp = comp[comp.length - 1];
 
   if (path) {
-    path = path + "/" + capitalize(comp);
+    path = capitalize(path) + "/" + capitalize(comp);
   } else {
     path = capitalize(comp);
   }
@@ -75,7 +97,9 @@ function writeFile(template, component) {
   }
 
   const fileWithselectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
-  // const indexWithselectedExtension = typescript ? `index.ts` : `index.js`;
+  const indexWithselectedExtension = typescript
+    ? `${capitalize(comp)}/index.ts`
+    : `${capitalize(comp)}/index.js`;
 
   if (!fs.existsSync(fileWithselectedExtension)) {
     // generate component file
@@ -94,20 +118,22 @@ function writeFile(template, component) {
     });
 
     // generate index file
-    // fs.outputFile(indexWithselectedExtension, templates.index, err => {
-    //   if (err) throw err;
-    //   replace({
-    //     regex: ":name",
-    //     replacement: capitalize(comp),
-    //     paths: [indexWithselectedExtension],
-    //     recursive: false,
-    //     silent: true
-    //   });
-    //   console.log(
-    //     `index file for ${comp} component created at ${indexWithselectedExtension}`
-    //       .cyan
-    //   );
-    // });
+    if (!nofolder) {
+      fs.outputFile(indexWithselectedExtension, templates.index, err => {
+        if (err) throw err;
+        replace({
+          regex: ":name",
+          replacement: capitalize(comp),
+          paths: [indexWithselectedExtension],
+          recursive: false,
+          silent: true
+        });
+        console.log(
+          `index file for ${comp} component created at ${indexWithselectedExtension}`
+            .cyan
+        );
+      });
+    }
   } else {
     console.log(
       `Component ${comp} allready exists at ${fileWithselectedExtension}, choose another name if you want to create a new component`

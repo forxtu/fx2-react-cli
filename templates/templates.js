@@ -2,19 +2,33 @@ const functionalComponent = `
 const :name = () => {
   return (
     <div className=":name">
+
     </div>
   )
 }
+
 :name.propTypes = {
+  
+}
+`;
+
+const functionalComponentTs = `
+type :nameProps = {
+
+};
+
+const :name: React.FC<:nameProps> = () => {
+  return (
+    <div className=":name">
+
+    </div>
+  )
 }
 `;
 
 const classComponent = `
 class :name extends Component {
-  constructor(props){
-    super(props);
-  }
-  render(){
+  render() {
     return (
       <div className=":name">
     
@@ -22,22 +36,45 @@ class :name extends Component {
     )
   }
 }
+
 :name.propTypes = {
+
 }
 `;
 
-const index = `
-import :name from "./:name";
+const classComponentTs = `
+type :nameState = {
+
+};
+
+type :nameProps = {
+
+};
+
+class :name extends React.Component<:nameState, :nameProps> {
+  render() {
+    return (
+      <div className=":name">
+    
+      </div>
+    )
+  }
+}
+`;
+
+const index = `import :name from "./:name";
 
 export default :name;
 `;
 
 const imports = {
   react: 'import React from "react";',
+  reactClass: 'import React, { Component } from "react";',
+  reactTs: 'import * as React from "react";',
   hook: 'import { useState, useEffect } from "react";',
   propTypes: 'import PropTypes from "prop-types";',
   stylesheet: 'import "./:name.scss";',
-  connect: 'import {connect} from "react-redux";'
+  connect: 'import { connect } from "react-redux";'
 };
 
 const exported = {
@@ -75,10 +112,12 @@ function mapDispatchToProps(dispatch) {
 `;
 
 module.exports = {
-  functionalComponent: functionalComponent,
-  classComponent: classComponent,
+  functionalComponent,
+  functionalComponentTs,
+  classComponent,
+  classComponentTs,
   index,
-  hook: hook,
-  imports: imports,
-  exported: exported
+  hook,
+  imports,
+  exported
 };
