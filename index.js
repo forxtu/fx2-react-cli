@@ -10,7 +10,6 @@ program
   .option("-c, --classComponent", "Create class component")
   .option("-t, --typescript", "Create typescript file")
   .option("-n, --nofolder", "Do not wrap component in folder")
-  .option("-s, --style", "With stylesheet")
   .action(createComponent);
 
 program

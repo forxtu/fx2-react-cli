@@ -11,7 +11,6 @@ let classComponent;
 let typescript;
 let newCompPath;
 let nofolder;
-let stylesheet;
 
 module.exports = async function createComponent(component, cmd) {
   newCompPath = component;
@@ -24,7 +23,6 @@ module.exports = async function createComponent(component, cmd) {
   cmd.functionalComponentTs
     ? (functionalComponentTs = true)
     : (functionalComponentTs = false);
-  cmd.style ? (stylesheet = true) : (stylesheet = false);
 
   if (fs.existsSync("./src/components")) {
     newCompPath = `./src/components/${component}`;
@@ -55,23 +53,23 @@ function buildTemplate() {
       : [templates.functionalComponentTs].join("\n");
   }
 
-  if (stylesheet) {
-    imports.push(templates.imports.stylesheet);
-  }
-
   let exported = [templates.exported.default];
 
   return imports.join("\n") + "\n" + body + "\n" + exported;
 }
 
+const getNoFolderPath = () => {
+  strArr = newCompPath.split("/");
+  strArr.splice(strArr.length - 1, 1);
+  path = strArr.join("/");
+  return path;
+};
+
 function writeFile(template, component) {
   let path = newCompPath;
 
   if (nofolder) {
-    strArr = newCompPath.split("/");
-    strArr.splice(strArr.length - 1, 1);
-    path = strArr.join("/");
-    console.log(path);
+    path = getNoFolderPath();
   }
 
   let comp = component.split("/");
@@ -83,23 +81,10 @@ function writeFile(template, component) {
     path = capitalize(comp);
   }
 
-  if (stylesheet) {
-    if (!fs.existsSync(`${path}.scss`)) {
-      console.log("creating syles");
-      fs.outputFileSync(`${path}.scss`, "");
-      console.log(`Stylesheet ${comp} created at ${path}.scss`.cyan);
-    } else {
-      console.log(
-        `Stylesheet ${comp} allready exists at ${path}.scss, choose another name if you want to create a new stylesheet`
-          .red
-      );
-    }
-  }
-
   const fileWithselectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
   const indexWithselectedExtension = typescript
-    ? `${capitalize(comp)}/index.ts`
-    : `${capitalize(comp)}/index.js`;
+    ? `${getNoFolderPath()}/${capitalize(comp)}/index.ts`
+    : `${getNoFolderPath()}/${capitalize(comp)}/index.js`;
 
   if (!fs.existsSync(fileWithselectedExtension)) {
     // generate component file
