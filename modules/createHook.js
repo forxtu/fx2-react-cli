@@ -3,7 +3,8 @@ const replace = require("replace");
 const camelCase = require("lodash/camelCase");
 
 // utils
-const capitalize = require("../utils/capitalize");
+const { pascalCase } = require("../utils/common");
+const getNoFolderPath = require("../utils/selectors");
 
 // templates
 const template = require("../templates/templates");
@@ -18,7 +19,7 @@ module.exports = async function createHook(hook, cmd) {
     newHookPath = `./src/hooks/${hook}`;
   }
 
-  let template = await buildTemplate();
+  const template = await buildTemplate();
   writeFile(template, hook);
 };
 
@@ -33,33 +34,34 @@ function buildTemplate() {
 function writeFile(template, hook) {
   let path = newHookPath;
 
-  if (nofolder) {
-    strArr = newHookPath.split("/");
-    strArr.splice(strArr.length - 1, 1);
-    path = strArr.join("/");
-    console.log(path);
-  }
-
   let hookName = hook.split("/");
   hookName = hookName[hookName.length - 1];
 
-  if (path) {
-    path = "hooks/" + camelCase(hook);
-  } else {
-    path = camelCase(hook);
+  const formattedHookName = camelCase(hookName);
+
+  if (nofolder) {
+    path = getNoFolderPath(newHookPath);
   }
 
-  let hookNameUseName = hook.substring(0, 3);
+  if (path) {
+    path = `${getNoFolderPath(newHookPath)}${
+      !nofolder ? "/hooks/" : "/"
+    }${formattedHookName}`;
+  } else {
+    path = formattedHookName;
+  }
+
+  const isHookNamesPrefixUse = hookName.substring(0, 3) === "use";
 
   const fileWithselectedExtension = typescript ? `${path}.ts` : `${path}.js`;
 
   if (!fs.existsSync(fileWithselectedExtension)) {
-    hookNameUseName === "use"
+    isHookNamesPrefixUse
       ? fs.outputFile(fileWithselectedExtension, template, err => {
           if (err) throw err;
           replace({
             regex: ":name",
-            replacement: camelCase(hookName),
+            replacement: formattedHookName,
             paths: [fileWithselectedExtension],
             recursive: false,
             silent: true
@@ -69,7 +71,7 @@ function writeFile(template, hook) {
           );
         })
       : console.log(
-          `Hook must have a "use" in its prefix. Try to generate "use${capitalize(
+          `Hook must have a "use" in its prefix. Try to generate "use${pascalCase(
             hookName
           )}"`.red
         );
