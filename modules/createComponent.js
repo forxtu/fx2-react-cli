@@ -2,7 +2,8 @@ const fs = require("fs-extra");
 const replace = require("replace");
 
 // utils
-const capitalize = require("../utils/capitalize");
+const { capitalize } = require("../utils/common");
+const getNoFolderPath = require("../utils/selectors");
 
 // templates
 const templates = require("../templates/templates");
@@ -58,18 +59,11 @@ function buildTemplate() {
   return imports.join("\n") + "\n" + body + "\n" + exported;
 }
 
-const getNoFolderPath = () => {
-  strArr = newCompPath.split("/");
-  strArr.splice(strArr.length - 1, 1);
-  path = strArr.join("/");
-  return path;
-};
-
 function writeFile(template, component) {
   let path = newCompPath;
 
   if (nofolder) {
-    path = getNoFolderPath();
+    path = getNoFolderPath(newCompPath);
   }
 
   let comp = component.split("/");
@@ -83,8 +77,8 @@ function writeFile(template, component) {
 
   const fileWithselectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
   const indexWithselectedExtension = typescript
-    ? `${getNoFolderPath()}/${capitalize(comp)}/index.ts`
-    : `${getNoFolderPath()}/${capitalize(comp)}/index.js`;
+    ? `${getNoFolderPath(newCompPath)}/${capitalize(comp)}/index.ts`
+    : `${getNoFolderPath(newCompPath)}/${capitalize(comp)}/index.js`;
 
   if (!fs.existsSync(fileWithselectedExtension)) {
     // generate component file
