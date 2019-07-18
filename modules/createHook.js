@@ -35,7 +35,8 @@ function writeFile(template, hook) {
   let path = newHookPath;
 
   let hookName = hook.split("/");
-  hookName = hookName[hookName.length - 1];
+  const hookNameLength = hookName.length;
+  hookName = hookNameLength > 1 ? hookName[hookName.length - 1] : hookName[0];
 
   const formattedHookName = camelCase(hookName);
 
@@ -43,10 +44,10 @@ function writeFile(template, hook) {
     path = getNoFolderPath(newHookPath);
   }
 
+  const hookNamePath = hookNameLength > 1 ? getNoFolderPath(newHookPath) : "./";
+
   if (path) {
-    path = `${getNoFolderPath(newHookPath)}${
-      !nofolder ? "/hooks/" : "/"
-    }${formattedHookName}`;
+    path = `${hookNamePath}${!nofolder ? "/hooks/" : "/"}${formattedHookName}`;
   } else {
     path = formattedHookName;
   }

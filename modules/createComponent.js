@@ -69,16 +69,18 @@ function writeFile(template, component) {
   let comp = component.split("/");
   comp = comp[comp.length - 1];
 
+  const capitalizedComp = capitalize(comp);
+
   if (path) {
-    path = capitalize(path) + "/" + capitalize(comp);
+    path = path + "/" + capitalizedComp;
   } else {
-    path = capitalize(comp);
+    path = capitalizedComp;
   }
 
   const fileWithselectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
   const indexWithselectedExtension = typescript
-    ? `${getNoFolderPath(newCompPath)}/${capitalize(comp)}/index.ts`
-    : `${getNoFolderPath(newCompPath)}/${capitalize(comp)}/index.js`;
+    ? `${getNoFolderPath(path)}/index.ts`
+    : `${getNoFolderPath(path)}/index.js`;
 
   if (!fs.existsSync(fileWithselectedExtension)) {
     // generate component file
@@ -86,7 +88,7 @@ function writeFile(template, component) {
       if (err) throw err;
       replace({
         regex: ":name",
-        replacement: capitalize(comp),
+        replacement: capitalizedComp,
         paths: [fileWithselectedExtension],
         recursive: false,
         silent: true
@@ -102,7 +104,7 @@ function writeFile(template, component) {
         if (err) throw err;
         replace({
           regex: ":name",
-          replacement: capitalize(comp),
+          replacement: capitalizedComp,
           paths: [indexWithselectedExtension],
           recursive: false,
           silent: true
