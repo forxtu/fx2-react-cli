@@ -3,7 +3,7 @@ const replace = require("replace");
 
 // utils
 const { capitalize } = require("../utils/common");
-const getNoFolderPath = require("../utils/selectors");
+const { getNoFolderPath, getGlobalPath } = require("../utils/selectors");
 
 // templates
 const templates = require("../templates/templates");
@@ -12,10 +12,12 @@ let classComponent;
 let typescript;
 let newCompPath;
 let nofolder;
+let global;
 
 module.exports = async function createComponent(component, cmd) {
   newCompPath = component;
   cmd.nofolder ? (nofolder = true) : (nofolder = false);
+  cmd.global ? (global = true) : (global = false);
   cmd.typescript ? (typescript = true) : (typescript = false);
   cmd.classComponent ? (classComponent = true) : (classComponent = false);
   cmd.functionalComponent
@@ -25,9 +27,13 @@ module.exports = async function createComponent(component, cmd) {
     ? (functionalComponentTs = true)
     : (functionalComponentTs = false);
 
-  if (fs.existsSync("./src/components")) {
-    newCompPath = `./src/components/${component}`;
+  // Global path
+  const globalDir = "./src/components";
+
+  if (global) {
+    newCompPath = await getGlobalPath(globalDir, component);
   }
+
   let template = await buildTemplate();
   writeFile(template, component);
 };
@@ -117,7 +123,7 @@ function writeFile(template, component) {
     }
   } else {
     console.log(
-      `Component ${comp} allready exists at ${fileWithselectedExtension}, choose another name if you want to create a new component`
+      `Component ${comp} already exists at ${fileWithselectedExtension}, choose another name if you want to create a new component`
         .red
     );
   }
