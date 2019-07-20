@@ -4,19 +4,27 @@ const camelCase = require("lodash/camelCase");
 
 // utils
 const { pascalCase } = require("../utils/common");
-const getNoFolderPath = require("../utils/selectors");
+const { getNoFolderPath, getGlobalPath } = require("../utils/selectors");
 
 // templates
 const template = require("../templates/templates");
+
+let global;
+let typescript;
+let newHookPath;
 
 module.exports = async function createHook(hook, cmd) {
   newHookPath = hook;
 
   cmd.nofolder ? (nofolder = true) : (nofolder = false);
   cmd.typescript ? (typescript = true) : (typescript = false);
+  cmd.global ? (global = true) : (global = false);
 
-  if (fs.existsSync("./src/hooks")) {
-    newHookPath = `./src/hooks/${hook}`;
+  // Global path
+  const globalDir = "./src/hooks";
+
+  if (global) {
+    newHookPath = await getGlobalPath(globalDir, hook);
   }
 
   const template = await buildTemplate();
@@ -44,10 +52,20 @@ function writeFile(template, hook) {
     path = getNoFolderPath(newHookPath);
   }
 
-  const hookNamePath = hookNameLength > 1 ? getNoFolderPath(newHookPath) : "./";
+  let hookNamePath;
+
+  if (global) {
+    path = newHookPath;
+  } else {
+    hookNamePath = hookNameLength > 1 ? getNoFolderPath(newHookPath) : "./";
+  }
 
   if (path) {
-    path = `${hookNamePath}${!nofolder ? "/hooks/" : "/"}${formattedHookName}`;
+    if (!global) {
+      path = `${hookNamePath}${
+        !nofolder ? "/hooks/" : "/"
+      }${formattedHookName}`;
+    }
   } else {
     path = formattedHookName;
   }
@@ -68,7 +86,7 @@ function writeFile(template, hook) {
             silent: true
           });
           console.log(
-            `Hook ${hookName} created at ${fileWithselectedExtension}`.cyan
+            `Hook "${hookName}" created at "${fileWithselectedExtension}"`.cyan
           );
         })
       : console.log(
@@ -78,7 +96,7 @@ function writeFile(template, hook) {
         );
   } else {
     console.log(
-      `Hook ${hookName} allready exists at ${fileWithselectedExtension}, choose another name if you want to create a new hook`
+      `Hook "${hookName}" allready exists at "${fileWithselectedExtension}", choose another name if you want to create a new hook`
         .red
     );
   }

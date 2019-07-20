@@ -18,6 +18,7 @@ program
   .command("gh <hook>")
   .option("-t, --typescript", "Create typescript file")
   .option("-n, --nofolder", "Do not wrap hook in folder")
+  .option("-g, --global", "Create hook in 'src/hooks' folder")
   .action(createHook);
 
 program
