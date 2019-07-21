@@ -52,7 +52,9 @@ function processFeatureElements(path, featureName) {
     { type: "components", name: "FeatureComponent", suffix: "" },
     { type: "containers", name: "FeatureContainer", suffix: "Container" },
     { type: "actions", name: "FeatureActions", suffix: "Actions" },
-    { type: "reducers", name: "FeatureReducer", suffix: "Reducer" }
+    { type: "reducers", name: "FeatureReducer", suffix: "Reducer" },
+    { type: "types", name: "FeatureTypes", suffix: "Types" },
+    { type: "hooks", name: "useFeature", suffix: "" }
   ];
 
   const capitalizedFeatureName = capitalize(featureName);
@@ -99,18 +101,23 @@ function processFeatureElements(path, featureName) {
     featureElements.forEach(element => {
       fs.renameSync(
         getDefaultPath(element),
-        `${path}/${element.type}/${capitalizedFeatureName}${capitalize(
-          element.suffix
-        )}.${getTypescriptExtenstionWithType(element)}`,
+        `${path}/${element.type}/${
+          element.type === "hooks"
+            ? `use${capitalizedFeatureName}`
+            : capitalizedFeatureName
+        }${capitalize(element.suffix)}.${getTypescriptExtenstionWithType(
+          element
+        )}`,
         err => {
           console.log(`Something went wrong ${err}`.red);
         }
       );
     });
+
     replace({
-      regex: ":name",
-      replacement: `${path}`,
-      paths: [capitalizedFeatureName],
+      regex: "__NAME_PLACEHOLDER__",
+      replacement: capitalizedFeatureName,
+      paths: [path],
       recursive: true,
       silent: true
     });
