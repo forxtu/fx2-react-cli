@@ -7,7 +7,7 @@ const createHook = require("./modules/createHook");
 const createFeature = require("./modules/createFeature");
 
 program
-  .command("gc <component>", "Generate component")
+  .command("gc <component>")
   .option("-c, --classComponent", "Create class component")
   .option("-t, --typescript", "Create typescript component file")
   .option("-n, --nofolder", "Do not wrap component in folder")
@@ -15,14 +15,14 @@ program
   .action(createComponent);
 
 program
-  .command("gh <hook>", "Generate hook")
+  .command("gh <hook>")
   .option("-t, --typescript", "Create typescript hook file")
   .option("-n, --nofolder", "Do not wrap hook in folder")
   .option("-g, --global", "Create hook in 'src/hooks' folder")
   .action(createHook);
 
 program
-  .command("gf <feature>", "Generate feature with react-redux")
+  .command("gf <feature>")
   .option("-t, --typescript", "Create typescript feature files")
   .option("-g, --global", "Create feature in 'src/features' folder")
   .action(createFeature);
