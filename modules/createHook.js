@@ -86,17 +86,18 @@ function writeFile(template, hook) {
             silent: true
           });
           console.log(
-            `Hook "${hookName}" created at "${fileWithselectedExtension}"`.cyan
+            `✔️  Hook "${hookName}" created at "${fileWithselectedExtension}"`
+              .cyan
           );
         })
       : console.log(
-          `Hook must have a "use" in its prefix. Try to generate "use${pascalCase(
+          `❌  Hook must have a "use" in its prefix. Try to generate "use${pascalCase(
             hookName
           )}"`.red
         );
   } else {
     console.log(
-      `Hook "${hookName}" allready exists at "${fileWithselectedExtension}", choose another name if you want to create a new hook`
+      `❌  Hook "${hookName}" allready exists at "${fileWithselectedExtension}", choose another name if you want to create a new hook`
         .red
     );
   }

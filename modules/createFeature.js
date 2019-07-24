@@ -38,10 +38,10 @@ function generateBoilerplate(path) {
   if (!fs.existsSync(path)) {
     processFeatureElements(path, featureName);
 
-    console.log(`Feature "${featureName}" created at "${path}"`.cyan);
+    console.log(`✔️  Feature "${featureName}" created at "${path}"`.cyan);
   } else {
     console.log(
-      `Feature "${featureName}" already exists at "${path}", choose another name if you want to create a new feature`
+      `❌  Feature "${featureName}" already exists at "${path}", choose another name if you want to create a new feature`
         .red
     );
   }
@@ -91,7 +91,7 @@ function processFeatureElements(path, featureName) {
           process();
         }
         if (err) {
-          console.log(`Something went wrong ${err}`.red);
+          console.log(`❌  Something went wrong ${err}`.red);
         }
       }
     );
@@ -109,7 +109,7 @@ function processFeatureElements(path, featureName) {
           element
         )}`,
         err => {
-          console.log(`Something went wrong ${err}`.red);
+          console.log(`❌  Something went wrong ${err}`.red);
         }
       );
     });

@@ -100,7 +100,7 @@ function writeFile(template, component) {
         silent: true
       });
       console.log(
-        `Component "${comp}" created at "${fileWithselectedExtension}"`.cyan
+        `✔️  Component "${comp}" created at "${fileWithselectedExtension}"`.cyan
       );
     });
 
@@ -116,14 +116,14 @@ function writeFile(template, component) {
           silent: true
         });
         console.log(
-          `index file for "${comp}" component created at "${indexWithselectedExtension}"`
+          `✔️  index file for "${comp}" component created at "${indexWithselectedExtension}"`
             .cyan
         );
       });
     }
   } else {
     console.log(
-      `Component "${comp}" already exists at "${fileWithselectedExtension}", choose another name if you want to create a new component`
+      `❌  Component "${comp}" already exists at "${fileWithselectedExtension}", choose another name if you want to create a new component`
         .red
     );
   }
