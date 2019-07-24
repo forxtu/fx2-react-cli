@@ -1,6 +1,6 @@
 {
   "name": "fx2-react-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A npm package to generate react elements",
   "main": "index.js",
   "bin": {
