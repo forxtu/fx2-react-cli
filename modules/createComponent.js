@@ -19,7 +19,7 @@ module.exports = async function createComponent(component, cmd) {
   cmd.nofolder ? (nofolder = true) : (nofolder = false);
   cmd.global ? (global = true) : (global = false);
   cmd.typescript ? (typescript = true) : (typescript = false);
-  cmd.classComponent ? (classComponent = true) : (classComponent = false);
+  cmd.classcomponent ? (classComponent = true) : (classComponent = false);
   cmd.functionalComponent
     ? (functionalComponent = true)
     : (functionalComponent = false);
