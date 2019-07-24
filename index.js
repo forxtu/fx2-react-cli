@@ -7,8 +7,20 @@ const createHook = require("./modules/createHook");
 const createFeature = require("./modules/createFeature");
 
 program
+  .version(require("./package.json").version, "-v, --version")
+  .on("--help", function() {
+    console.log("Examples:".bgCyan.black);
+    console.log("");
+    console.log("  fx2 gc MyGreatComponent");
+    console.log("  fx2 gh path/to/useGreatHook -g");
+    console.log("  fx2 gf MyGreatFeature -t");
+    console.log("");
+  });
+
+program
   .command("gc <component>")
-  .option("-c, --classComponent", "Create class component")
+  .description("Generates component (functional and JS by default)")
+  .option("-c, --classcomponent", "Create class component")
   .option("-t, --typescript", "Create typescript component file")
   .option("-n, --nofolder", "Do not wrap component in folder")
   .option("-g, --global", "Create component in 'src/components' folder")
@@ -16,6 +28,7 @@ program
 
 program
   .command("gh <hook>")
+  .description("Generates hook (JS by default)")
   .option("-t, --typescript", "Create typescript hook file")
   .option("-n, --nofolder", "Do not wrap hook in folder")
   .option("-g, --global", "Create hook in 'src/hooks' folder")
@@ -23,6 +36,9 @@ program
 
 program
   .command("gf <feature>")
+  .description(
+    "Generates feature folder structure (JS by default, using react-redux)"
+  )
   .option("-t, --typescript", "Create typescript feature files")
   .option("-g, --global", "Create feature in 'src/features' folder")
   .action(createFeature);
