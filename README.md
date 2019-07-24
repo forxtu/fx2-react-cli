@@ -55,7 +55,7 @@ At the moment there are 3 commands which allows you to generate component, hook 
 
 - **Default extension of the generated files**
 
-      Javascript
+      JavaScript
 
 - **How to use package with TypeScript?**
 
@@ -68,7 +68,7 @@ At the moment there are 3 commands which allows you to generate component, hook 
 
   Example above will generate component with .tsx extension and different structure
 
-- **How to generate element in nested folder**
+- **How to generate element in nested folder?**
 
   Provide path in `<name/path>` field. Make sure that you are in the right folder in your terminal. If you don't use global `-g` option provided path will take that folder as start point.
 
@@ -82,7 +82,7 @@ At the moment there are 3 commands which allows you to generate component, hook 
                                   ├── Header.js
                                   └── index.js
 
-- **Are " " necessary in `name/path` field**
+- **Are " " necessary in `name/path` field?**
 
   No. " " are optional
 
