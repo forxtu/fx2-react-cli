@@ -1,6 +1,6 @@
 {
   "name": "fx2-react-cli",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Dennis Merkulov",
   "description": "CLI for React with usage of best practices and support for JS/TS",
   "repository": {
