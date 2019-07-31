@@ -3,8 +3,11 @@ const replace = require("replace");
 const camelCase = require("lodash/camelCase");
 
 // utils
-const { pascalCase } = require("../utils/common");
+const { pascalCase } = require("../utils/helpers");
 const { getNoFolderPath, getGlobalPath } = require("../utils/selectors");
+const {
+  consoleMessages: { success, error }
+} = require("../utils/common");
 
 // templates
 const template = require("../templates/templates");
@@ -86,18 +89,20 @@ function writeFile(template, hook) {
             silent: true
           });
           console.log(
-            `✔️  Hook "${hookName}" created at "${fileWithselectedExtension}"`
-              .cyan
+            success,
+            `Hook "${hookName}" created at "${fileWithselectedExtension}"`.cyan
           );
         })
       : console.log(
-          `❌  Hook must have a "use" in its prefix. Try to generate "use${pascalCase(
+          error,
+          `Hook must have a "use" in its prefix. Try to generate "use${pascalCase(
             hookName
           )}"`.red
         );
   } else {
     console.log(
-      `❌  Hook "${hookName}" allready exists at "${fileWithselectedExtension}", choose another name if you want to create a new hook`
+      error,
+      `Hook "${hookName}" allready exists at "${fileWithselectedExtension}", choose another name if you want to create a new hook`
         .red
     );
   }

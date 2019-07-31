@@ -2,8 +2,11 @@ const fs = require("fs-extra");
 const replace = require("replace");
 
 // utils
-const { capitalize } = require("../utils/common");
+const { capitalize } = require("../utils/helpers");
 const { getNoFolderPath, getGlobalPath } = require("../utils/selectors");
+const {
+  consoleMessages: { success, error }
+} = require("../utils/common");
 
 // templates
 const templates = require("../templates/templates");
@@ -100,7 +103,8 @@ function writeFile(template, component) {
         silent: true
       });
       console.log(
-        `✔️  Component "${comp}" created at "${fileWithselectedExtension}"`.cyan
+        success,
+        `Component "${comp}" created at "${fileWithselectedExtension}`.cyan
       );
     });
 
@@ -115,15 +119,12 @@ function writeFile(template, component) {
           recursive: false,
           silent: true
         });
-        console.log(
-          `✔️  index file for "${comp}" component created at "${indexWithselectedExtension}"`
-            .cyan
-        );
       });
     }
   } else {
     console.log(
-      `❌  Component "${comp}" already exists at "${fileWithselectedExtension}", choose another name if you want to create a new component`
+      error,
+      `Component "${comp}" already exists at "${fileWithselectedExtension}", choose another name if you want to create a new component`
         .red
     );
   }

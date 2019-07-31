@@ -1,14 +1,8 @@
-const { upperFirst, camelCase } = require("lodash");
-
-function capitalize(text) {
-  return upperFirst(text);
-}
-
-function pascalCase(text) {
-  return upperFirst(camelCase(text));
-}
+const consoleMessages = {
+  success: `✔️  Success!`.bgGreen.black,
+  error: `❌  Error!`.bgRed.black
+};
 
 module.exports = {
-  capitalize,
-  pascalCase
+  consoleMessages: consoleMessages
 };

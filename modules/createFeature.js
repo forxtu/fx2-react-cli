@@ -2,15 +2,11 @@ const fs = require("fs-extra");
 const replace = require("replace");
 
 // utils
-const { capitalize } = require("../utils/common");
+const { capitalize } = require("../utils/helpers");
+const { getElementName, getGlobalPath } = require("../utils/selectors");
 const {
-  getNoFolderPath,
-  getElementName,
-  getGlobalPath
-} = require("../utils/selectors");
-
-// templates
-const templates = require("../templates/templates");
+  consoleMessages: { success, error }
+} = require("../utils/common");
 
 let newFeaturePath;
 let global;
@@ -38,10 +34,11 @@ function generateBoilerplate(path) {
   if (!fs.existsSync(path)) {
     processFeatureElements(path, featureName);
 
-    console.log(`✔️  Feature "${featureName}" created at "${path}"`.cyan);
+    console.log(success, `Feature "${featureName}" created at "${path}"`.cyan);
   } else {
     console.log(
-      `❌  Feature "${featureName}" already exists at "${path}", choose another name if you want to create a new feature`
+      error,
+      `Feature "${featureName}" already exists at "${path}", choose another name if you want to create a new feature`
         .red
     );
   }
@@ -91,7 +88,7 @@ function processFeatureElements(path, featureName) {
           process();
         }
         if (err) {
-          console.log(`❌  Something went wrong ${err}`.red);
+          console.log(error, `Something went wrong ${err}`.red);
         }
       }
     );
@@ -109,7 +106,7 @@ function processFeatureElements(path, featureName) {
           element
         )}`,
         err => {
-          console.log(`❌  Something went wrong ${err}`.red);
+          console.log(error, `Something went wrong ${err}`.red);
         }
       );
     });
