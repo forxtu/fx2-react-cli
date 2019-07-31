@@ -4,12 +4,12 @@ const :name = () => {
     <div className=":name">
 
     </div>
-  )
-}
+  );
+};
 
 :name.propTypes = {
   
-}
+};
 `;
 
 const functionalComponentTs = `
@@ -17,29 +17,29 @@ type :nameProps = {
 
 };
 
-const :name: React.FC<:nameProps> = () => {
+const :name = (props: :nameProps) => {
   return (
-    <div className=":name">
-
+    <div>
+      <h1>:name</h1>
     </div>
-  )
-}
+  );
+};
 `;
 
 const classComponent = `
 class :name extends Component {
   render() {
     return (
-      <div className=":name">
-    
+      <div>
+        <h1>:name</h1>
       </div>
-    )
-  }
-}
+    );
+  };
+};
 
 :name.propTypes = {
 
-}
+};
 `;
 
 const classComponentTs = `
@@ -54,12 +54,12 @@ type :nameProps = {
 class :name extends React.Component<:nameState, :nameProps> {
   render() {
     return (
-      <div className=":name">
-    
+      <div>
+        <h1>:name</h1>
       </div>
-    )
-  }
-}
+    );
+  };
+};
 `;
 
 const index = `import :name from "./:name";
@@ -95,8 +95,8 @@ const :name = () => {
   return {
     value,
     setValue
-  }
-}
+  };
+};
 `;
 
 const mapStateToProps = `
@@ -108,7 +108,7 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = `
 function mapDispatchToProps(dispatch) {  
   return {};
-}
+};
 `;
 
 module.exports = {
