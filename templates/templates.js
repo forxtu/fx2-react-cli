@@ -1,8 +1,8 @@
 const functionalComponent = `
 const :name = () => {
   return (
-    <div className=":name">
-
+    <div>
+      <h1>:name</h1>
     </div>
   );
 };
