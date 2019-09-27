@@ -86,36 +86,36 @@ function writeFile(template, component) {
     path = capitalizedComp;
   }
 
-  const fileWithselectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
-  const indexWithselectedExtension = typescript
+  const fileWithSelectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
+  const indexWithSelectedExtension = typescript
     ? `${getNoFolderPath(path)}/index.ts`
     : `${getNoFolderPath(path)}/index.js`;
 
-  if (!fs.existsSync(fileWithselectedExtension)) {
+  if (!fs.existsSync(fileWithSelectedExtension)) {
     // generate component file
-    fs.outputFile(fileWithselectedExtension, template, err => {
+    fs.outputFile(fileWithSelectedExtension, template, err => {
       if (err) throw err;
       replace({
         regex: ":name",
         replacement: capitalizedComp,
-        paths: [fileWithselectedExtension],
+        paths: [fileWithSelectedExtension],
         recursive: false,
         silent: true
       });
       console.log(
         success,
-        `Component "${comp}" created at "${fileWithselectedExtension}`.cyan
+        `Component "${comp}" created at "${fileWithSelectedExtension}`.cyan
       );
     });
 
     // generate index file
     if (!nofolder) {
-      fs.outputFile(indexWithselectedExtension, templates.index, err => {
+      fs.outputFile(indexWithSelectedExtension, templates.index, err => {
         if (err) throw err;
         replace({
           regex: ":name",
           replacement: capitalizedComp,
-          paths: [indexWithselectedExtension],
+          paths: [indexWithSelectedExtension],
           recursive: false,
           silent: true
         });
@@ -124,7 +124,7 @@ function writeFile(template, component) {
   } else {
     console.log(
       error,
-      `Component "${comp}" already exists at "${fileWithselectedExtension}", choose another name if you want to create a new component`
+      `Component "${comp}" already exists at "${fileWithSelectedExtension}", choose another name if you want to create a new component`
         .red
     );
   }

@@ -75,22 +75,22 @@ function writeFile(template, hook) {
 
   const isHookNamesPrefixUse = hookName.substring(0, 3) === "use";
 
-  const fileWithselectedExtension = typescript ? `${path}.ts` : `${path}.js`;
+  const fileWithSelectedExtension = typescript ? `${path}.ts` : `${path}.js`;
 
-  if (!fs.existsSync(fileWithselectedExtension)) {
+  if (!fs.existsSync(fileWithSelectedExtension)) {
     isHookNamesPrefixUse
-      ? fs.outputFile(fileWithselectedExtension, template, err => {
+      ? fs.outputFile(fileWithSelectedExtension, template, err => {
           if (err) throw err;
           replace({
             regex: ":name",
             replacement: formattedHookName,
-            paths: [fileWithselectedExtension],
+            paths: [fileWithSelectedExtension],
             recursive: false,
             silent: true
           });
           console.log(
             success,
-            `Hook "${hookName}" created at "${fileWithselectedExtension}"`.cyan
+            `Hook "${hookName}" created at "${fileWithSelectedExtension}"`.cyan
           );
         })
       : console.log(
@@ -102,7 +102,7 @@ function writeFile(template, hook) {
   } else {
     console.log(
       error,
-      `Hook "${hookName}" allready exists at "${fileWithselectedExtension}", choose another name if you want to create a new hook`
+      `Hook "${hookName}" already exists at "${fileWithSelectedExtension}", choose another name if you want to create a new hook`
         .red
     );
   }

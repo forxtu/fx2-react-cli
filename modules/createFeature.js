@@ -56,9 +56,9 @@ function processFeatureElements(path, featureName) {
 
   const capitalizedFeatureName = capitalize(featureName);
 
-  const getTypescriptExtenstion = () => (typescript ? "ts" : "js");
-  const getTypescriptExtenstionTsx = () => (typescript ? "tsx" : "js");
-  const getTypescriptExtenstionWithType = element => {
+  const getTypescriptExtension = () => (typescript ? "ts" : "js");
+  const getTypescriptExtensionTsx = () => (typescript ? "tsx" : "js");
+  const getTypescriptExtensionWithType = element => {
     return typescript
       ? element.type === "components" || element.type === "containers"
         ? "tsx"
@@ -69,20 +69,20 @@ function processFeatureElements(path, featureName) {
   const getDefaultPath = element => {
     return `${path}/${element.type}/${
       element.name
-    }.${getTypescriptExtenstionWithType(element)}`;
+    }.${getTypescriptExtensionWithType(element)}`;
   };
 
   // Step 1 - copy files from templates
   fs.copySync(
     `${require("path").dirname(
       require.main.filename
-    )}/templates/feature/${getTypescriptExtenstion()}`,
+    )}/templates/feature/${getTypescriptExtension()}`,
     `${path}`
   );
 
   const renameIfPathExists = process => {
     fs.pathExists(
-      `${path}/components/FeatureComponent.${getTypescriptExtenstionTsx()}`,
+      `${path}/components/FeatureComponent.${getTypescriptExtensionTsx()}`,
       (err, exists) => {
         if (exists) {
           process();
@@ -102,7 +102,7 @@ function processFeatureElements(path, featureName) {
           element.type === "hooks"
             ? `use${capitalizedFeatureName}`
             : capitalizedFeatureName
-        }${capitalize(element.suffix)}.${getTypescriptExtenstionWithType(
+        }${capitalize(element.suffix)}.${getTypescriptExtensionWithType(
           element
         )}`,
         err => {
