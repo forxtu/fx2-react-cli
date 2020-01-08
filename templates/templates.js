@@ -1,26 +1,28 @@
 const functionalComponent = `
-const :name = () => {
+const :name = ({msg = "Hello!"}) => {
   return (
     <div>
       <h1>:name</h1>
+      <p>{msg}</p>
     </div>
   );
 };
 
 :name.propTypes = {
-  
+  msg: PropTypes.string
 };
 `;
 
 const functionalComponentTs = `
 type :name = {
-
+  msg?: string;
 };
 
-const :name = (props: :name) => {
+const :name = ({msg = "Hello!"}: :name) => {
   return (
     <div>
       <h1>:name</h1>
+      <p>{msg}</p>
     </div>
   );
 };
@@ -35,7 +37,8 @@ class :name extends Component {
   render() {
     return (
       <div>
-        <h1>{this.state.msg} :name</h1>
+        <h1>:name</h1>
+        <p>{this.state.msg}</p>
       </div>
     );
   };
