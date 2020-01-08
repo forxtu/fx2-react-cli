@@ -13,11 +13,11 @@ const :name = () => {
 `;
 
 const functionalComponentTs = `
-type :nameProps = {
+type :name = {
 
 };
 
-const :name = (props: :nameProps) => {
+const :name = (props: :name) => {
   return (
     <div>
       <h1>:name</h1>
@@ -28,10 +28,14 @@ const :name = (props: :nameProps) => {
 
 const classComponent = `
 class :name extends Component {
+  state = {
+    msg: "Hello!"
+  }
+
   render() {
     return (
       <div>
-        <h1>:name</h1>
+        <h1>{this.state.msg} :name</h1>
       </div>
     );
   };
@@ -44,18 +48,28 @@ class :name extends Component {
 
 const classComponentTs = `
 type :nameState = {
-
+  msg2: string;
 };
 
 type :nameProps = {
-
+  msg?: string
 };
 
-class :name extends React.Component<:nameState, :nameProps> {
+class :name extends Component<:nameState, :nameProps> {
+  static defaultProps = {
+    msg: 'Hello'
+  }
+
+  state: :nameState = {
+    msg2: "World!"
+  }
+
   render() {
     return (
       <div>
         <h1>:name</h1>
+        <p>{this.props.msg}</p>
+        <p>{this.state.msg2}</p>
       </div>
     );
   };
@@ -70,7 +84,6 @@ export default :name;
 const imports = {
   react: 'import React from "react";',
   reactClass: 'import React, { Component } from "react";',
-  reactTs: 'import * as React from "react";',
   hook: 'import { useState, useEffect } from "react";',
   propTypes: 'import PropTypes from "prop-types";',
   stylesheet: 'import "./:name.scss";',
