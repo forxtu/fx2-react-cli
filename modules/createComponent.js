@@ -11,121 +11,173 @@ const {
 // templates
 const templates = require("../templates/templates");
 
-let classComponent;
-let typescript;
-let newCompPath;
-let nofolder;
-let global;
+// Global path
+const GLOBAL_DIR = "./src/components";
+
+const initFlags = (
+  classComponent,
+  typescript,
+  nofolder,
+  global,
+  functionalComponent,
+  functionalComponentTs
+) => ({
+  classComponent,
+  typescript,
+  nofolder,
+  global,
+  functionalComponent,
+  functionalComponentTs
+});
 
 module.exports = async function createComponent(component, cmd) {
-  newCompPath = component;
-  cmd.nofolder ? (nofolder = true) : (nofolder = false);
-  cmd.global ? (global = true) : (global = false);
-  cmd.typescript ? (typescript = true) : (typescript = false);
-  cmd.classcomponent ? (classComponent = true) : (classComponent = false);
-  cmd.functionalComponent
-    ? (functionalComponent = true)
-    : (functionalComponent = false);
-  cmd.functionalComponentTs
-    ? (functionalComponentTs = true)
-    : (functionalComponentTs = false);
+  let compPath = component;
 
-  // Global path
-  const globalDir = "./src/components";
+  // Get provided flags
+  const flags = initFlags(
+    cmd.classcomponent || false,
+    cmd.typescript || false,
+    cmd.nofolder || false,
+    cmd.global || false,
+    cmd.functionalComponent || false,
+    cmd.functionalComponentTs || false
+  );
 
+  // If global flag provided - Set component path to global
+  const { global } = flags;
   if (global) {
-    newCompPath = await getGlobalPath(globalDir, component);
+    compPath = await getGlobalPath(GLOBAL_DIR, component);
   }
 
-  let template = await buildTemplate();
-  writeFile(template, component);
+  const template = await buildTemplate(flags);
+  writeFile(template, component, compPath, flags);
 };
 
-function buildTemplate() {
-  let imports;
-  typescript
-    ? (imports = [templates.imports.reactTs])
-    : classComponent
-    ? (imports = [templates.imports.reactClass])
-    : (imports = [templates.imports.react]);
+const getTemplateImports = isClassComponent => {
+  const { reactClass, react } = templates.imports;
+  return isClassComponent ? [reactClass] : [react];
+};
 
+const getTemplateBody = (isClassComponent, classTemplate, funcTemplate) =>
+  isClassComponent ? [classTemplate] : [funcTemplate].join("\n");
+
+function buildTemplate({ classComponent, typescript }) {
+  let imports;
   let body;
 
-  if (!typescript) {
-    imports.push(templates.imports.propTypes);
+  const {
+    classComponentTs: classTemplateTs,
+    functionalComponentTs: funcTemplateTs,
+    classComponent: classTemplate,
+    functionalComponent: funcTemplate,
+    imports: { propTypes },
+    exported: { default: defaultExport }
+  } = templates;
 
-    body = classComponent
-      ? [templates.classComponent]
-      : [templates.functionalComponent].join("\n");
+  if (typescript) {
+    imports = getTemplateImports(classComponent);
+
+    body = getTemplateBody(classComponent, classTemplateTs, funcTemplateTs);
   } else {
-    body = classComponent
-      ? [templates.classComponentTs]
-      : [templates.functionalComponentTs].join("\n");
+    imports = getTemplateImports(classComponent);
+    imports.push(propTypes);
+
+    body = getTemplateBody(classComponent, classTemplate, funcTemplate);
   }
 
-  let exported = [templates.exported.default];
-
-  return imports.join("\n") + "\n" + body + "\n" + exported;
+  return `${imports.join("\n")}\n${body}\n${defaultExport}`;
 }
 
-function writeFile(template, component) {
-  let path = newCompPath;
+const successMessage = (comp, fileWithSelectedExtension) => {
+  console.log(
+    success,
+    `Component "${comp}" created at "${fileWithSelectedExtension}`.cyan
+  );
+};
 
-  if (nofolder) {
-    path = getNoFolderPath(newCompPath);
-  }
+const errorMessage = (comp, fileWithSelectedExtension) => {
+  console.log(
+    error,
+    `Component "${comp}" already exists at "${fileWithSelectedExtension}", choose another name if you want to create a new component`
+      .red
+  );
+};
 
-  let comp = component.split("/");
-  comp = comp[comp.length - 1];
+const generateComponentFile = (
+  template,
+  capitalizedComp,
+  fileWithSelectedExtension
+) => {
+  fs.outputFile(fileWithSelectedExtension, template, err => {
+    if (err) throw err;
+    replace({
+      regex: ":name",
+      replacement: capitalizedComp,
+      paths: [fileWithSelectedExtension],
+      recursive: false,
+      silent: true
+    });
+  });
+};
 
-  const capitalizedComp = capitalize(comp);
-
-  if (path) {
-    path = path + "/" + capitalizedComp;
-  } else {
-    path = capitalizedComp;
-  }
-
-  const fileWithSelectedExtension = typescript ? `${path}.tsx` : `${path}.js`;
-  const indexWithSelectedExtension = typescript
-    ? `${getNoFolderPath(path)}/index.ts`
-    : `${getNoFolderPath(path)}/index.js`;
-
-  if (!fs.existsSync(fileWithSelectedExtension)) {
-    // generate component file
-    fs.outputFile(fileWithSelectedExtension, template, err => {
+const generateIndexFile = (
+  nofolder,
+  capitalizedComp,
+  indexWithSelectedExtension
+) => {
+  if (!nofolder) {
+    fs.outputFile(indexWithSelectedExtension, templates.index, err => {
       if (err) throw err;
       replace({
         regex: ":name",
         replacement: capitalizedComp,
-        paths: [fileWithSelectedExtension],
+        paths: [indexWithSelectedExtension],
         recursive: false,
         silent: true
       });
-      console.log(
-        success,
-        `Component "${comp}" created at "${fileWithSelectedExtension}`.cyan
-      );
     });
+  }
+};
 
-    // generate index file
-    if (!nofolder) {
-      fs.outputFile(indexWithSelectedExtension, templates.index, err => {
-        if (err) throw err;
-        replace({
-          regex: ":name",
-          replacement: capitalizedComp,
-          paths: [indexWithSelectedExtension],
-          recursive: false,
-          silent: true
-        });
-      });
-    }
+const getCompFileWithSelectedExtension = (path, typescript) =>
+  `${path}.${typescript ? "tsx" : "jsx"}`;
+
+const getIndexFileWithSelectedExtension = (path, typescript) =>
+  `${getNoFolderPath(path)}/index.${typescript ? "ts" : "js"}`;
+
+const getCompPath = (path, capitalizedComp) =>
+  path ? `${path}/${capitalizedComp}` : capitalizedComp;
+
+const setComp = component => {
+  const comp = component.split("/");
+  return comp[comp.length - 1];
+};
+
+function writeFile(template, component, compPath, { typescript, nofolder }) {
+  let path = compPath;
+  let comp = setComp(component);
+  const capitalizedComp = capitalize(comp);
+
+  // If nofolder flag provided - set path to no folder
+  if (nofolder) {
+    path = getNoFolderPath(compPath);
+  }
+  path = getCompPath(path, capitalizedComp);
+
+  const fileWithSelectedExtension = getCompFileWithSelectedExtension(
+    path,
+    typescript
+  );
+  const indexWithSelectedExtension = getIndexFileWithSelectedExtension(
+    path,
+    typescript
+  );
+
+  if (!fs.existsSync(fileWithSelectedExtension)) {
+    generateComponentFile(template, capitalizedComp, fileWithSelectedExtension);
+    generateIndexFile(nofolder, capitalizedComp, indexWithSelectedExtension);
+    successMessage(comp, fileWithSelectedExtension);
   } else {
-    console.log(
-      error,
-      `Component "${comp}" already exists at "${fileWithSelectedExtension}", choose another name if you want to create a new component`
-        .red
-    );
+    errorMessage(comp, fileWithSelectedExtension);
   }
 }
