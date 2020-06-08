@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const replace = require("replace");
 const path = require("path");
 
-// utils
+// Utils
 const { capitalize } = require("../utils/helpers");
 const { getElementName, getGlobalPath } = require("../utils/selectors");
 const {

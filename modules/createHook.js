@@ -2,14 +2,14 @@ const fs = require("fs-extra");
 const replace = require("replace");
 const camelCase = require("lodash/camelCase");
 
-// utils
+// Utils
 const { pascalCase } = require("../utils/helpers");
 const { getNoFolderPath, getGlobalPath } = require("../utils/selectors");
 const {
   consoleMessages: { success, error }
 } = require("../utils/common");
 
-// templates
+// Templates
 const template = require("../templates/templates");
 
 let global;
@@ -79,7 +79,7 @@ function writeFile(template, hook) {
 
   if (!fs.existsSync(fileWithSelectedExtension)) {
     isHookNamesPrefixUse
-      ? fs.outputFile(fileWithSelectedExtension, template, err => {
+      ? fs.outputFile(fileWithSelectedExtension, template, (err) => {
           if (err) throw err;
           replace({
             regex: ":name",
