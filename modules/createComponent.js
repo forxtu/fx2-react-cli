@@ -14,46 +14,7 @@ const templates = require("../templates/templates");
 // Global path
 const GLOBAL_DIR = "./src/components";
 
-const initFlags = (
-  classComponent,
-  typescript,
-  nofolder,
-  global,
-  functionalComponent,
-  functionalComponentTs
-) => ({
-  classComponent,
-  typescript,
-  nofolder,
-  global,
-  functionalComponent,
-  functionalComponentTs
-});
-
-module.exports = async function createComponent(component, cmd) {
-  let compPath = component;
-
-  // Get provided flags
-  const flags = initFlags(
-    cmd.classcomponent || false,
-    cmd.typescript || false,
-    cmd.nofolder || false,
-    cmd.global || false,
-    cmd.functionalComponent || false,
-    cmd.functionalComponentTs || false
-  );
-
-  // If global flag provided - Set component path to global
-  const { global } = flags;
-  if (global) {
-    compPath = await getGlobalPath(GLOBAL_DIR, component);
-  }
-
-  const template = await buildTemplate(flags);
-  writeFile(template, component, compPath, flags);
-};
-
-const getTemplateImports = isClassComponent => {
+const getTemplateImports = (isClassComponent) => {
   const { reactClass, react } = templates.imports;
   return isClassComponent ? [reactClass] : [react];
 };
@@ -108,7 +69,7 @@ const generateComponentFile = (
   capitalizedComp,
   fileWithSelectedExtension
 ) => {
-  fs.outputFile(fileWithSelectedExtension, template, err => {
+  fs.outputFile(fileWithSelectedExtension, template, (err) => {
     if (err) throw err;
     replace({
       regex: ":name",
@@ -126,7 +87,7 @@ const generateIndexFile = (
   indexWithSelectedExtension
 ) => {
   if (!nofolder) {
-    fs.outputFile(indexWithSelectedExtension, templates.index, err => {
+    fs.outputFile(indexWithSelectedExtension, templates.index, (err) => {
       if (err) throw err;
       replace({
         regex: ":name",
@@ -148,14 +109,14 @@ const getIndexFileWithSelectedExtension = (path, typescript) =>
 const getCompPath = (path, capitalizedComp) =>
   path ? `${path}/${capitalizedComp}` : capitalizedComp;
 
-const setComp = component => {
+const setComp = (component) => {
   const comp = component.split("/");
   return comp[comp.length - 1];
 };
 
 function writeFile(template, component, compPath, { typescript, nofolder }) {
   let path = compPath;
-  let comp = setComp(component);
+  const comp = setComp(component);
   const capitalizedComp = capitalize(comp);
 
   // If nofolder flag provided - set path to no folder
@@ -181,3 +142,42 @@ function writeFile(template, component, compPath, { typescript, nofolder }) {
     errorMessage(comp, fileWithSelectedExtension);
   }
 }
+
+const initFlags = (
+  classComponent,
+  typescript,
+  nofolder,
+  global,
+  functionalComponent,
+  functionalComponentTs
+) => ({
+  classComponent,
+  typescript,
+  nofolder,
+  global,
+  functionalComponent,
+  functionalComponentTs
+});
+
+module.exports = async function createComponent(component, cmd) {
+  let compPath = component;
+
+  // Get provided flags
+  const flags = initFlags(
+    cmd.classcomponent || false,
+    cmd.typescript || false,
+    cmd.nofolder || false,
+    cmd.global || false,
+    cmd.functionalComponent || false,
+    cmd.functionalComponentTs || false
+  );
+
+  // If global flag provided - Set component path to global
+  const { global } = flags;
+  if (global) {
+    compPath = await getGlobalPath(GLOBAL_DIR, component);
+  }
+
+  const template = await buildTemplate(flags);
+  writeFile(template, component, compPath, flags);
+};
